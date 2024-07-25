@@ -3,6 +3,7 @@ from app.models import *
 # Create your views here.
 from django.http import HttpResponse
 from django.db.models.functions import Length
+from django.db.models import Q
 
 
 
@@ -71,6 +72,13 @@ def retrieve_webpages(request):
     QLWO=Webpage.objects.all().order_by('-name') # sorts name in descending order of ASCII Values
     QLWO=Webpage.objects.all().order_by(Length('name')) # sorts name based on length of the string
     QLWO=Webpage.objects.all().order_by(Length('name').desc()) # sorts name in descending order based on length of the string
+    QLWO=Webpage.objects.filter(name__startswith='ro') # checks if string is starting with given substring
+    QLWO=Webpage.objects.filter(email__endswith='com') # checks if string is ending with given substring
+    QLWO=Webpage.objects.filter(url__in=('https://rohit.com','https://messi.com')) # checks for multiple condition 
+    QLWO=Webpage.objects.filter(name__regex=r't$') # checks if the substring ends with t
+    QLWO=Webpage.objects.filter(name__regex=r'^r') # checks if the substring starts with r
+    QLWO=Webpage.objects.filter(Q(name='soumya')|Q(name='rohit')) # writing multiple values
+    
     d={'webpages':QLWO}
     return render(request,'retrieve_webpages.html',d)
 
@@ -82,7 +90,9 @@ def retrieve_access(request):
     QLAO=AccessRecord.objects.all().order_by('author')
     QLAO=AccessRecord.objects.all().order_by('-name')
     QLAO=AccessRecord.objects.filter(name=3).order_by('author')
-   
+    QLAO=AccessRecord.objects.filter(date__gte='2024-7-1')
+    QLAO=AccessRecord.objects.filter(date__lte='2024-7-1')
+    QLAO=AccessRecord.objects.filter(date__day='22')
     d={'access_record':QLAO}
     return render(request,'retrieve_access.html',d)
 
